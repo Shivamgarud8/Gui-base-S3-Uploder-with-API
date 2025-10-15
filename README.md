@@ -8,7 +8,7 @@
 
 
 <h1 align="center">🚀 GUI-Based S3 Uploader using AWS Lambda & API Gateway</h1>
-![lambda](images/l1.png)
+
 
 
 
@@ -131,7 +131,7 @@ The <b>upload.html</b> frontend then directly uploads the file using this secure
 <h2>🧾 Example Screenshot</h2>
 
 <p align="center">
-  <img src="https://github.com/shivamgarud/gui-s3-uploader/assets/upload-demo.png" alt="Upload Demo" width="600"/>
+  <img src="https://github.com/shivamgarud/Gui-base-S3-Uploder-with-API/images/l1.png" alt="Upload Demo" width="600"/>
 </p>
 
 <hr>
