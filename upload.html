@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SmartS3 - AWS S3 File Uploader</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      max-width: 600px;
+      width: 100%;
+      animation: slideIn 0.6s ease-out;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    h1 {
+      color: #667eea;
+      font-size: 28px;
+      margin-bottom: 10px;
+      text-align: center;
+      animation: fadeIn 0.8s ease-out;
+    }
+
+    .subtitle {
+      color: #666;
+      font-size: 14px;
+      text-align: center;
+      margin-bottom: 30px;
+      animation: fadeIn 1s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .upload-area {
+      border: 3px dashed #667eea;
+      border-radius: 15px;
+      padding: 40px;
+      text-align: center;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+    }
+
+    .upload-area:hover {
+      border-color: #764ba2;
+      background: linear-gradient(135deg, rgba(102, 126, 234, 0.2) 0%, rgba(118, 75, 162, 0.2) 100%);
+      transform: scale(1.02);
+    }
+
+    .upload-area.dragover {
+      border-color: #4caf50;
+      background: rgba(76, 175, 80, 0.1);
+    }
+
+    .upload-icon {
+      font-size: 60px;
+      margin-bottom: 15px;
+      animation: bounce 2s infinite;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    input[type="file"] {
+      display: none;
+    }
+
+    .file-label {
+      color: #667eea;
+      font-weight: 600;
+      font-size: 18px;
+      display: block;
+      margin-bottom: 10px;
+    }
+
+    .file-info {
+      color: #999;
+      font-size: 14px;
+    }
+
+    .selected-file {
+      margin-top: 20px;
+      padding: 15px;
+      background: #f0f0f0;
+      border-radius: 10px;
+      display: none;
+      animation: slideIn 0.4s ease-out;
+    }
+
+    .selected-file.show {
+      display: block;
+    }
+
+    .file-name {
+      color: #333;
+      font-weight: 600;
+      word-break: break-all;
+    }
+
+    button {
+      width: 100%;
+      margin-top: 20px;
+      padding: 15px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    #status {
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 10px;
+      font-weight: 600;
+      text-align: center;
+      display: none;
+      animation: slideIn 0.4s ease-out;
+    }
+
+    #status.show {
+      display: block;
+    }
+
+    #status.loading {
+      background: #fff3cd;
+      color: #856404;
+      border: 2px solid #ffc107;
+    }
+
+    #status.success {
+      background: #d4edda;
+      color: #155724;
+      border: 2px solid #28a745;
+    }
+
+    #status.error {
+      background: #f8d7da;
+      color: #721c24;
+      border: 2px solid #dc3545;
+    }
+
+    .spinner {
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid #667eea;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      animation: spin 1s linear infinite;
+      display: inline-block;
+      margin-right: 10px;
+      vertical-align: middle;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .view-link {
+      display: inline-block;
+      margin-top: 10px;
+      color: #667eea;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .view-link:hover {
+      color: #764ba2;
+      transform: scale(1.05);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>SmartS3 – GUI-Based AWS S3 File Uploader</h1>
+    <p class="subtitle">with API Integration</p>
+    
+    <div class="upload-area" id="uploadArea" onclick="document.getElementById('fileInput').click()">
+      <div class="upload-icon">📁</div>
+      <label class="file-label">Choose a file or drag it here</label>
+      <p class="file-info">Support for all file types</p>
+    </div>
+
+    <input type="file" id="fileInput">
+    
+    <div class="selected-file" id="selectedFile">
+      <div>Selected: <span class="file-name" id="fileName"></span></div>
+    </div>
+
+    <button onclick="uploadFile()" id="uploadBtn">Upload to S3</button>
+    
+    <div id="status"></div>
+  </div>
+
+  <script>
+    const API_URL = "https://m1ocj2v34m.execute-api.ap-south-1.amazonaws.com/dev/upload";
+    const uploadArea = document.getElementById("uploadArea");
+    const fileInput = document.getElementById("fileInput");
+    const selectedFileDiv = document.getElementById("selectedFile");
+    const fileNameSpan = document.getElementById("fileName");
+    const uploadBtn = document.getElementById("uploadBtn");
+    const statusEl = document.getElementById("status");
+
+    // File input change handler
+    fileInput.addEventListener("change", function() {
+      if (this.files[0]) {
+        fileNameSpan.textContent = this.files[0].name;
+        selectedFileDiv.classList.add("show");
+      }
+    });
+
+    // Drag and drop handlers
+    uploadArea.addEventListener("dragover", (e) => {
+      e.preventDefault();
+      uploadArea.classList.add("dragover");
+    });
+
+    uploadArea.addEventListener("dragleave", () => {
+      uploadArea.classList.remove("dragover");
+    });
+
+    uploadArea.addEventListener("drop", (e) => {
+      e.preventDefault();
+      uploadArea.classList.remove("dragover");
+      if (e.dataTransfer.files[0]) {
+        fileInput.files = e.dataTransfer.files;
+        fileNameSpan.textContent = e.dataTransfer.files[0].name;
+        selectedFileDiv.classList.add("show");
+      }
+    });
+
+    async function uploadFile() {
+      const file = fileInput.files[0];
+      if (!file) {
+        showStatus("Please select a file first!", "error");
+        return;
+      }
+
+      uploadBtn.disabled = true;
+      showStatus('<span class="spinner"></span>Getting upload URL...', "loading");
+
+      try {
+        // 1️⃣ Get presigned URL from Lambda
+        const res = await fetch(`${API_URL}?name=${encodeURIComponent(file.name)}`);
+        const data = await res.json();
+        if (!data.uploadURL) throw new Error("Upload URL not received from Lambda");
+
+        showStatus('<span class="spinner"></span>Uploading file to S3...', "loading");
+
+        // 2️⃣ Upload file directly to S3
+        const uploadRes = await fetch(data.uploadURL, {
+          method: "PUT",
+          body: file
+        });
+
+        if (uploadRes.ok) {
+          showStatus(`✅ Upload successful! <br><a href="https://shivam-lammbda-gui-save.s3.amazonaws.com/${encodeURIComponent(file.name)}" target="_blank" class="view-link">View File →</a>`, "success");
+        } else {
+          showStatus("❌ Upload failed!", "error");
+        }
+      } catch (err) {
+        console.error(err);
+        showStatus("⚠️ Error: " + err.message, "error");
+      } finally {
+        uploadBtn.disabled = false;
+      }
+    }
+
+    function showStatus(message, type) {
+      statusEl.innerHTML = message;
+      statusEl.className = `show ${type}`;
+    }
+  </script>
+</body>
+</html>
