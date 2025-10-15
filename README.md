@@ -8,10 +8,9 @@
 
 
 <h1 align="center">🚀 GUI-Based S3 Uploader using AWS Lambda & API Gateway</h1>
+![lambda](images/l1.png)
 
-<p align="center">
-  <img src="https://github.com/shivamgarud/gui-s3-uploader/assets/banner.png" alt="S3 Uploader Banner" width="800"/>
-</p>
+
 
 <h2>📘 About the Project</h2>
 <p>
@@ -41,7 +40,7 @@ the frontend and backend.
   <li><code>/s3-uploader-api</code> — <b>ANY</b></li>
   <li><code>/upload</code> — <b>GET</b> / <b>POST</b></li>
 </ul>
-
+![api](images/a2.png)
 <h3>📦 Integration</h3>
 <p>
 Each route is integrated with a backend Lambda function (<b>Integration ID:</b> jv7fgm4) that processes requests and interacts with S3.
@@ -63,13 +62,14 @@ Can be integrated with <b>AWS IAM</b> or <b>Cognito Authorizers</b> for producti
   <li><b>Invoke URL:</b> <a href="https://m1ocj2v34m.execute-api.ap-south-1.amazonaws.com/dev" target="_blank">
     https://m1ocj2v34m.execute-api.ap-south-1.amazonaws.com/dev
   </a></li>
+  ![api](images/a3.png)
   <li><b>Deployment ID:</b> mh4gpf</li>
   <li><b>Region:</b> ap-south-1 (Mumbai)</li>
   <li><b>Stage Variables:</b>
     <ul><li><b>Key:</b> <code>BUCKET_NAME</code> → <b>Value:</b> <code>shivam-lammbda-gui-save</code></li></ul>
   </li>
 </ul>
-
+  ![api](images/e1.png)
 <hr>
 
 <h2>🧩 Environment Variables</h2>
@@ -126,7 +126,7 @@ The <b>upload.html</b> frontend then directly uploads the file using this secure
 }
 </code></pre>
 
-<hr>
+
 
 <h2>🧾 Example Screenshot</h2>
 
