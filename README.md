@@ -40,7 +40,7 @@ the frontend and backend.
   <li><code>/s3-uploader-api</code> — <b>ANY</b></li>
   <li><code>/upload</code> — <b>GET</b> / <b>POST</b></li>
 </ul>
-![api](images/a2.png)
+![images](images/a2.png)
 <h3>📦 Integration</h3>
 <p>
 Each route is integrated with a backend Lambda function (<b>Integration ID:</b> jv7fgm4) that processes requests and interacts with S3.
@@ -69,7 +69,7 @@ Can be integrated with <b>AWS IAM</b> or <b>Cognito Authorizers</b> for producti
     <ul><li><b>Key:</b> <code>BUCKET_NAME</code> → <b>Value:</b> <code>shivam-lammbda-gui-save</code></li></ul>
   </li>
 </ul>
-  ![api](images/e1.png)
+  ![images](images/e1.png)
 <hr>
 
 <h2>🧩 Environment Variables</h2>
